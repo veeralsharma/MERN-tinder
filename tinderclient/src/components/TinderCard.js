@@ -1,31 +1,32 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import '../css/TinderCards.css'
 import TINDERCARD from 'react-tinder-card'
+import {AllUser} from "../api"
 
 function TinderCard() {
 
-    const [people,setPeople]=useState([
-        {
-            name:"Rachel Green",
-            url:"https://tvline.com/wp-content/uploads/2019/06/friends-rachel.jpg?w=620"
-        },
-        {
-            name:"Monica Geller",
-            url:"https://i.insider.com/5c8279ebeb3ce821ef1247a2?width=1100&format=jpeg&auto=webp"
-        },
-        {
-            name:"Phoebe Buffay",
-            url:"https://wallpapercave.com/wp/wp3744299.jpg"
-        }
-    ])
+    const [people,setPeople]=useState([])
+
+    const [lastswiped,setLastSwiped] = useState({
+        name:"",
+        direction:""
+    })
+
+    useEffect(() => {
+       async function getdata(){
+           await AllUser().then((users) => {
+               setPeople(users.message)
+           }).catch(e => console.log(e)) 
+       } 
+       getdata()
+    },[])
 
     const swiped = (direction,nameToDelete) => {
-        console.log(`${nameToDelete} left screen`);
-        // setLastDirection(direction)
+        
     }
 
     const outOfFrame = (name) => {
-        console.log(`${name} left the screen`);
+        
     }
 
     return (
@@ -39,10 +40,10 @@ function TinderCard() {
                         onSwipe={(dir) => swiped(dir,person.name)}
                         onCardLeftScreen={() => outOfFrame(person.name)}
                     >
-                    <div style={{backgroundImage:`url(${person.url})`}}
+                    <div style={{backgroundImage:`url(${person.profile_pic})`}}
                         className="card"
                     >
-                        <h3>{person.name}</h3>
+                        <h3>{person.name} | {person.age}</h3>
                     </div>
                     </TINDERCARD>
                 ))}

@@ -10,9 +10,10 @@ import Register from "./components/Register"
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 function App() {
+
   useEffect(() => {
-    localStorage.removeItem("usertoken");
-  }, []);
+    console.log(localStorage.usertoken);
+  },[])
 
   return (
     <div className="App">
@@ -24,14 +25,14 @@ function App() {
           <Login />
         </Route>
         <Route exact path="/">
-          {!localStorage.usertoken ? (
+          {localStorage.usertoken ? (
             <>
               <Header />
               <TinderCards />
               <SwipeButtons />
             </>
           ) : (
-            <Login />
+            null
           )}
         </Route>
         <Route exact path="/chat">

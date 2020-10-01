@@ -5,25 +5,34 @@ module.exports = function (params) {
   const jwt = require("jsonwebtoken")
 
   api.post("/register", async (req, res) => {
-    const user = new User(req.body);
-    bcrypt.hash(req.body.password, 10, async (err, hash) => {
-      user.password = hash;
-      await user.generateAuthToken();
-      user.save((err) => {
-        if (err) {
-          res.status(400).json({
-            message: err,
-            status: "-1",
-          });
-        } else {
-          res.status(201).json({
-            token: user.token,
-            message: "Account Registered",
-            status: "1",
-          });
-        }
+
+    const {name,password,profile_pic,age}=req.body
+    if(!name || !password || !profile_pic || !age){
+      res.json({
+        status:"-1",
+        message:"An error occured"
+      })
+    }else{
+      const user = new User(req.body);
+      bcrypt.hash(req.body.password, 10, async (err, hash) => {
+        user.password = hash;
+        await user.generateAuthToken();
+        user.save((err) => {
+          if (err) {
+            res.status(400).json({
+              message: err,
+              status: "-1",
+            });
+          } else {
+            res.status(201).json({
+              token: user.token,
+              message: "Account Registered",
+              status: "1",
+            });
+          }
+        });
       });
-    });
+    }
   });
 
   api.post("/login", async (req, res) => {
@@ -72,4 +81,65 @@ module.exports = function (params) {
       });
     }
   });
+
+  api.get("/all", async (req,res) => {
+    try {
+      User.find({} , (err,users) =>{
+        if(err){
+          res.json({
+            status:"-1",
+            message:"An error occured"
+          })
+        }else{
+          if(users && users.length > 0){
+            res.json({
+              status:"1",
+              message:users
+            })
+          }else{
+            res.json({
+              status:"0",
+              message:"no users found"
+            })
+          }
+        }
+      })
+    } catch (error) {
+      res.json({
+        status:"-1",
+        message:"An error occured"
+      })
+    }
+  })
+
+  api.post("/user", async (req,res) => {
+    try {
+      User.find({_id : req.body._id} , (err,user) =>{
+        if(err){
+          res.json({
+            status:"-1",
+            message:"An error occured"
+          })
+        }else{
+          if(users ){
+            res.json({
+              status:"1",
+              message:user
+            })
+          }else{
+            res.json({
+              status:"0",
+              message:"no user found"
+            })
+          }
+        }
+      })
+    } catch (error) {
+      res.json({
+        status:"-1",
+        message:"An error occured"
+      })
+    }
+  })
+
 };

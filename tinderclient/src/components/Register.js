@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,6 +12,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import {Register} from "../api"
 
 function Copyright() {
   return (
@@ -49,6 +50,32 @@ const useStyles = makeStyles((theme) => ({
 export default function SignUp() {
   const classes = useStyles();
 
+  const [user,setUser] = useState({
+    name:"",
+    password:"",
+    age:18,
+    profile_pic:""
+  })
+
+  function handleChange(e){
+    setUser({
+      ...user,
+      [e.target.name]: e.target.value
+  })
+  }
+
+  function onSubmit(e){
+    e.preventDefault()
+    Register(user).then((res) => {
+      console.log(res);
+      if(res.status == "1"){
+        window.location.href="/"
+      }else{
+        window.location.reload()
+      }
+    })
+  }
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -59,18 +86,19 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={onSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
-                autoComplete="fname"
-                name="firstName"
+                name="name"
                 variant="outlined"
                 required
                 fullWidth
-                id="firstName"
-                label="First Name"
+                id="name"
+                label="Your Name"
                 autoFocus
+                value={user.name}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -78,10 +106,12 @@ export default function SignUp() {
                 variant="outlined"
                 required
                 fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="lname"
+                id="age"
+                label="Your age"
+                name="age"
+                type="number"
+                value={user.age}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -89,10 +119,11 @@ export default function SignUp() {
                 variant="outlined"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="profile_pic"
+                label="Profile Pic Url"
+                name="profile_pic"
+                value={user.profile_pic}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -105,6 +136,8 @@ export default function SignUp() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                value={user.password}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -134,4 +167,5 @@ export default function SignUp() {
       </div>
     </Container>
   );
+  
 }
