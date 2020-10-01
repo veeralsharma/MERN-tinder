@@ -12,6 +12,10 @@ function TinderCard() {
         {
             name:"Monica Geller",
             url:"https://i.insider.com/5c8279ebeb3ce821ef1247a2?width=1100&format=jpeg&auto=webp"
+        },
+        {
+            name:"Phoebe Buffay",
+            url:"https://wallpapercave.com/wp/wp3744299.jpg"
         }
     ])
 
